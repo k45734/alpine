@@ -36,3 +36,11 @@ jobs:
           tags: |
             k45734/python:latest
             k45734/python:${{ github.sha }}
+      - name: Trigger Flask Build
+        if: success() # alpine 빌드가 성공했을 때만 실행
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GH_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/k45734/flask/dispatches \
+            -d '{"event_type": "alpine_build_done"}'
